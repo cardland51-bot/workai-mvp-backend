@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  />
+  <title>WorkAI • Dev Cockpit</title>
+  <style>
+    :root {
+      --bg: #020817;
+      --panel: #020817;
+      --card: #020817;
+      --accent: #22c55e;
+      --accent-soft: rgba(34, 197, 94, 0.18);
+      --accent-alt: #38bdf8;
+      --danger: #f97316;
+      --text: #e5e7eb;
+      --muted: #6b7280;
+      --border: rgba(148, 163, 253, 0.18);
+      --radius-xl: 22px;
+      --shadow-soft: 0 18px 40px rgba(15, 23, 42, 0.55);
+      --transition-fast: 0.2s ease-out;
+      --gap: 14px;
+      --font: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: var(--font);
+      background:
+        radial-gradient(circle at top left, #111827 0%, #020817 48%, #000 100%);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.9fr) minmax(260px, 1.1fr);
+      gap: 16px;
+      align-items: flex-start;
+    }
+
+    @media (max-width: 900px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    header {
+      grid-column: 1 / -1;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 2px;
+    }
+
+    .eyebrow {
+      font-size: 10px;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .eyebrow span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 18px var(--accent);
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: 600;
+      color: #f9fafb;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    h1 span.sub {
+      font-size: 11px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      border: 1px solid var(--border);
+      font-size: 9px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .pill span.status {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: #ef4444;
+      box-shadow: 0 0 14px #ef4444;
+    }
+
+    .pill span.status.ok {
+      background: var(--accent);
+      box-shadow: 0 0 14px var(--accent);
+    }
+
+    .panel {
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.03), transparent),
+                  rgba(2,6,23,0.98);
+      border-radius: var(--radius-xl);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-soft);
+      padding: 10px 10px 9px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .panel h2 {
+      margin: 0;
+      font-size: 12px;
+      font-weight: 500;
+      color: #e5e7eb;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .panel h2 span.label {
+      font-size: 9px;
+      font-weight: 400;
+      color: var(--muted);
+    }
+
+    .row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .stat {
+      flex: 1;
+      min-width: 80px;
+      padding: 6px 7px;
+      border-radius: 16px;
+      border: 1px solid rgba(75,85,99,0.85);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.98), #020817);
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .stat-label {
+      font-size: 8px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .stat-value {
+      font-size: 11px;
+      color: #f9fafb;
+      font-weight: 500;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid rgba(75,85,99,0.9);
+      font-size: 7px;
+      color: var(--muted);
+      gap: 4px;
+      align-items: center;
+    }
+
+    .tag span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 4px;
+    }
+
+    th, td {
+      padding: 4px 4px;
+      font-size: 8px;
+      text-align: left;
+      border-bottom: 1px solid rgba(31,41,55,0.9);
+      color: var(--muted);
+    }
+
+    th {
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: #9ca3af;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .knob-input {
+      width: 54px;
+      padding: 2px 3px;
+      border-radius: 8px;
+      border: 1px solid rgba(75,85,99,0.9);
+      background: #020817;
+      color: var(--text);
+      font-size: 8px;
+      outline: none;
+    }
+
+    .knob-input.wide {
+      width: 86px;
+    }
+
+    .knob-label {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .btn-ghost {
+      padding: 4px 7px;
+      border-radius: 999px;
+      border: 1px solid rgba(75,85,99,0.9);
+      background: transparent;
+      color: var(--muted);
+      font-size: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all var(--transition-fast);
+    }
+
+    .btn-ghost:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+      box-shadow: 0 0 18px rgba(34,197,94,0.35);
+    }
+
+    .sandbox-label {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .sandbox-input {
+      width: 100%;
+      margin-top: 2px;
+      padding: 4px 6px;
+      border-radius: 10px;
+      border: 1px solid rgba(75,85,99,0.9);
+      background: #020817;
+      color: var(--text);
+      font-size: 9px;
+      outline: none;
+    }
+
+    .sandbox-result {
+      margin-top: 3px;
+      font-size: 9px;
+      color: #e5e7eb;
+    }
+
+    .log-line {
+      font-size: 7px;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      border-bottom: 1px dashed rgba(31,41,55,0.9);
+      padding: 3px 0;
+    }
+
+    .log-line span.left {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .log-line span.right {
+      white-space: nowrap;
+      color: var(--accent-alt);
+    }
+
+    .hint {
+      font-size: 8px;
+      color: var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header>
+      <div class="eyebrow">
+        <span class="dot"></span>
+        WORKAI DEV COCKPIT
+      </div>
+      <h1>
+        Your deck. Your rules.
+        <span class="sub">Public sees cards. You see the wiring.</span>
+      </h1>
+      <div class="pill" id="healthPill">
+        <span class="status" id="healthDot"></span>
+        <span id="healthText">Checking backend…</span>
+      </div>
+    </header>
+
+    <!-- LEFT COLUMN: Rules, knobs, sandbox -->
+    <section class="panel">
+      <h2>
+        Trade rulebook
+        <span class="label">Mowing • Pressure • Junk • Handyman</span>
+      </h2>
+      <div class="row">
+        <div class="hint">
+          Adjust these locally to feel out bands. These controls are visual only until we wire a secure save.
+        </div>
+        <button class="btn-ghost" id="resetRulesBtn">
+          Reset to defaults
+        </button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Lane</th>
+            <th>Base Min</th>
+            <th>Base Max</th>
+            <th>Low ×</th>
+            <th>High ×</th>
+            <th>Sample → Band</th>
+          </tr>
+        </thead>
+        <tbody id="rulesTableBody"></tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>
+        Global knobs
+        <span class="label">Free limit • Safety stance (local only)</span>
+      </h2>
+      <div class="row">
+        <div class="stat">
+          <div class="stat-label">Free photo limit (demo)</div>
+          <input id="freeLimit" class="knob-input wide" type="number" min="1" max="25" value="2" />
+          <div class="hint">How many snaps before “you should be charging for this” kicks in.</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Safety mode</div>
+          <select id="safetyMode" class="knob-input wide">
+            <option value="strict">Strict</option>
+            <option value="normal" selected>Normal</option>
+            <option value="loose">Loose (dev only)</option>
+          </select>
+          <div class="hint">Visual only. Real policy lives in server config.</div>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn-ghost" id="pretendDevTrue">
+          Pretend DEV_MODE = true
+        </button>
+        <button class="btn-ghost" id="pretendDevFalse">
+          Pretend DEV_MODE = false
+        </button>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>
+        Band sandbox
+        <span class="label">“What would we tell them?” (Client-safe)</span>
+      </h2>
+      <div class="sandbox-label">1. Pick lane</div>
+      <div class="row">
+        <button class="btn-ghost" data-lane="mowing">Mowing</button>
+        <button class="btn-ghost" data-lane="pressure_washing">Pressure</button>
+        <button class="btn-ghost" data-lane="junk_removal">Junk</button>
+        <button class="btn-ghost" data-lane="handyman">Handyman</button>
+      </div>
+      <div class="sandbox-label">2. Drop a number you’d normally say out loud</div>
+      <input id="sandboxPrice" class="sandbox-input" type="number" placeholder="e.g. 75, 150, 400" />
+      <div id="sandboxResult" class="sandbox-result">
+        You’ll see the clamped base and band here — this is what your deck would whisper back instead of you guessing.
+      </div>
+    </section>
+
+    <!-- RIGHT COLUMN: Health, config, fake log -->
+    <aside class="panel">
+      <h2>
+        Backend pulse
+        <span class="label">Live read from /api/health & /api/config</span>
+      </h2>
+      <div class="row">
+        <div class="stat">
+          <div class="stat-label">Service</div>
+          <div class="stat-value" id="svcName">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">Mode</div>
+          <div class="stat-value" id="svcMode">—</div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="stat">
+          <div class="stat-label">Paywall</div>
+          <div class="stat-value" id="svcPaywall">—</div>
+        </div>
+        <div class="stat">
+          <div class="stat-label">VAPID / Push</div>
+          <div class="stat-value" id="svcPush">—</div>
+        </div>
+      </div>
+      <div class="hint">
+        This panel is real: it reads what your deployed backend is actually reporting.
+      </div>
+    </aside>
+
+    <aside class="panel">
+      <h2>
+        Pipeline traces (mock)
+        <span class="label">Last few decisions as your bouncer sees them</span>
+      </h2>
+      <div id="logList">
+        <!-- Filled by script with synthetic lines for now -->
+      </div>
+      <div class="hint">
+        Hook this to a /api/dev/pipeline-log later. For now, it reminds you how each upload is judged.
+      </div>
+    </aside>
+  </div>
+
+  <script>
+    // Adjust this if you host dev.html elsewhere
+    const API_BASE = window.location.origin;
+
+    // Default rule set mirrors your 4 lanes
+    const defaultRules = {
+      mowing: {
+        label: "Mowing",
+        baseMin: 40,
+        baseMax: 800,
+        bandLow: 0.85,
+        bandHigh: 1.25
+      },
+      pressure_washing: {
+        label: "Pressure Washing",
+        baseMin: 120,
+        baseMax: 2500,
+        bandLow: 0.85,
+        bandHigh: 1.35
+      },
+      junk_removal: {
+        label: "Junk Removal",
+        baseMin: 90,
+        baseMax: 3500,
+        bandLow: 0.9,
+        bandHigh: 1.5
+      },
+      handyman: {
+        label: "Handyman / Punch",
+        baseMin: 95,
+        baseMax: 2500,
+        bandLow: 0.9,
+        bandHigh: 1.4
+      }
+    };
+
+    let rules = JSON.parse(JSON.stringify(defaultRules));
+    let sandboxLane = "mowing";
+
+    const rulesTableBody = document.getElementById("rulesTableBody");
+    const sandboxPrice = document.getElementById("sandboxPrice");
+    const sandboxResult = document.getElementById("sandboxResult");
+    const freeLimit = document.getElementById("freeLimit");
+    const safetyMode = document.getElementById("safetyMode");
+    const healthDot = document.getElementById("healthDot");
+    const healthText = document.getElementById("healthText");
+    const svcName = document.getElementById("svcName");
+    const svcMode = document.getElementById("svcMode");
+    const svcPaywall = document.getElementById("svcPaywall");
+    const svcPush = document.getElementById("svcPush");
+    const logList = document.getElementById("logList");
+
+    function renderRulesTable() {
+      rulesTableBody.innerHTML = "";
+      Object.entries(rules).forEach(([key, rule]) => {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${rule.label}</td>
+          <td><input class="knob-input" type="number" data-lane="${key}" data-key="baseMin" value="${rule.baseMin}"></td>
+          <td><input class="knob-input" type="number" data-lane="${key}" data-key="baseMax" value="${rule.baseMax}"></td>
+          <td><input class="knob-input" type="number" step="0.01" data-lane="${key}" data-key="bandLow" value="${rule.bandLow}"></td>
+          <td><input class="knob-input" type="number" step="0.01" data-lane="${key}" data-key="bandHigh" value="${rule.bandHigh}"></td>
+          <td class="knob-label" id="sample-${key}"></td>
+        `;
+        rulesTableBody.appendChild(tr);
+      });
+      updateSamples();
+    }
+
+    function updateSamples() {
+      Object.entries(rules).forEach(([key, rule]) => {
+        const mid = Math.round((rule.baseMin + rule.baseMax) / 2);
+        const low = Math.round(mid * rule.bandLow);
+        const high = Math.round(mid *
