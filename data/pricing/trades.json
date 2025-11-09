@@ -1,37 +1,32 @@
 {
-  "mow": {
-    "nudgeMaxPct": 0.2,
-    "checklist": [
-      "lawn_area_sqft",
-      "edges"
-    ]
+  "mowing": {
+    "baseNashville": 65,
+    "min": 40,
+    "max": 180,
+    "unit": "per_visit"
   },
-  "wash": {
-    "nudgeMaxPct": 0.2,
-    "checklist": [
-      "surface_sqft",
-      "stories"
-    ]
+  "pressure_wash": {
+    "baseNashville": 280,
+    "min": 150,
+    "max": 900,
+    "unit": "per_job"
   },
-  "leaf": {
-    "nudgeMaxPct": 0.2,
-    "checklist": [
-      "surface_sqft",
-      "stories"
-    ] 
+  "junk_removal": {
+    "baseNashville": 320,
+    "min": 120,
+    "max": 1200,
+    "unit": "per_job"
   },
   "handyman": {
-    "nudgeMaxPct": 0.2,
-    "checklist": [
-      "surface_sqft",
-      "stories"
-    ] 
-  },
-  "junk": {
-    "nudgeMaxPct": 0.2,
-    "checklist": [
-      "volume_cuyd",
-      "stairs"
-    ]
+    "baseNashvilleHourly": 75,
+    "minHourly": 55,
+    "maxHourly": 140,
+    "unit": "per_hour"
   }
+   "leaf clean up": {
+    "baseNashville": 280,
+    "min": 150,
+    "max": 900,
+    "unit": "per_job"
+  },
 }
