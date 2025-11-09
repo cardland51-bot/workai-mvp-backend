@@ -533,4 +533,170 @@
       Object.entries(rules).forEach(([key, rule]) => {
         const mid = Math.round((rule.baseMin + rule.baseMax) / 2);
         const low = Math.round(mid * rule.bandLow);
-        const high = Math.round(mid *
+        const high = Math.round(mid *         if (el) {
+          el.textContent = `$${mid} → $${low} – $${high}`;
+        }
+      });
+    }
+
+    // Handle rule knob changes
+    rulesTableBody.addEventListener("input", (e) => {
+      const input = e.target;
+      if (!input.classList.contains("knob-input")) return;
+      const lane = input.getAttribute("data-lane");
+      const key = input.getAttribute("data-key");
+      if (!lane || !key || !rules[lane]) return;
+
+      let val = parseFloat(input.value);
+      if (!isFinite(val)) return;
+
+      if (key === "baseMin" || key === "baseMax") {
+        if (val < 0) val = 0;
+      }
+
+      rules[lane][key] = val;
+      updateSamples();
+      updateSandbox();
+    });
+
+    // Reset to defaults
+    document.getElementById("resetRulesBtn").addEventListener("click", () => {
+      rules = JSON.parse(JSON.stringify(defaultRules));
+      renderRulesTable();
+      updateSandbox();
+    });
+
+    // Sandbox lane buttons
+    document.querySelectorAll('.btn-ghost[data-lane]').forEach((btn) => {
+      btn.addEventListener("click", () => {
+        sandboxLane = btn.getAttribute("data-lane");
+        document
+          .querySelectorAll('.btn-ghost[data-lane]')
+          .forEach(b => (b.style.borderColor = "rgba(75,85,99,0.9)"));
+        btn.style.borderColor = "var(--accent)";
+        updateSandbox();
+      });
+    });
+
+    // Sandbox price input
+    sandboxPrice.addEventListener("input", updateSandbox);
+
+    function updateSandbox() {
+      const rule = rules[sandboxLane] || rules.mowing;
+      const raw = parseFloat(sandboxPrice.value);
+      if (!isFinite(raw) || raw <= 0) {
+        sandboxResult.textContent =
+          `Lane: ${rule.label}. Drop a number and I'll show you the clamped base and band.`;
+        return;
+      }
+
+      const base = Math.max(rule.baseMin, Math.min(rule.baseMax, raw));
+      const low = Math.round(base * rule.bandLow);
+      const high = Math.round(base * rule.bandHigh);
+
+      sandboxResult.textContent =
+        `Lane: ${rule.label} • You say: $${raw} → Deck clamps at $${base} and whispers: $${low} – $${high}.`;
+    }
+
+    // Pretend DEV_MODE toggles (visual only)
+    document.getElementById("pretendDevTrue").addEventListener("click", () => {
+      svcMode.textContent = "DEV (simulated)";
+      svcMode.style.color = "var(--accent-alt)";
+    });
+
+    document.getElementById("pretendDevFalse").addEventListener("click", () => {
+      svcMode.textContent = "PROD (simulated)";
+      svcMode.style.color = "#f9fafb";
+    });
+
+    // Health + config real fetch
+    async function loadHealthAndConfig() {
+      try {
+        const hRes = await fetch(`${API_BASE}/api/health`);
+        if (!hRes.ok) throw new Error("health failed");
+        const health = await hRes.json();
+
+        healthDot.classList.add("ok");
+        healthText.textContent = "Backend: online";
+        svcName.textContent = health.service || "workai-mvp";
+        svcMode.textContent = health.dev ? "DEV" : "PROD";
+        svcMode.style.color = health.dev ? "var(--accent-alt)" : "#f9fafb";
+      } catch (e) {
+        healthDot.classList.remove("ok");
+        healthText.textContent = "Backend: unreachable";
+        svcName.textContent = "—";
+      }
+
+      try {
+        const cRes = await fetch(`${API_BASE}/api/config`);
+        if (!cRes.ok) throw new Error("config failed");
+        const cfg = await cRes.json();
+
+        const paywallOn = !!(cfg.paywallPrice && cfg.paypalClientId);
+        svcPaywall.textContent = paywallOn
+          ? `$${cfg.paywallPrice} / subs wired`
+          : "Free / not enforcing";
+
+        const pushOn = !!cfg.vapidPublicKeyBase64;
+        svcPush.textContent = pushOn ? "Configured" : "Not set";
+      } catch (e) {
+        svcPaywall.textContent = "—";
+        svcPush.textContent = "—";
+      }
+    }
+
+    // Mock pipeline log (until wired to real /api/dev/pipeline-log)
+    function seedMockLog() {
+      const examples = [
+        {
+          lane: "mowing",
+          base: 65,
+          low: 55,
+          high: 80,
+          note: "Front + back, weekly pattern."
+        },
+        {
+          lane: "pressure_washing",
+          base: 280,
+          low: 240,
+          high: 360,
+          note: "2-car drive + walk, light algae."
+        },
+        {
+          lane: "junk_removal",
+          base: 180,
+          low: 160,
+          high: 260,
+          note: "Couch + mattress, 1 flight of stairs."
+        },
+        {
+          lane: "handyman",
+          base: 195,
+          low: 175,
+          high: 270,
+          note: "TV mount + curtain rods, flags OK."
+        }
+      ];
+
+      logList.innerHTML = "";
+      examples.forEach((x, i) => {
+        const div = document.createElement("div");
+        div.className = "log-line";
+        div.innerHTML = `
+          <span class="left">
+            #${i + 1} ${x.lane} • base $${x.base} → $${x.low}–$${x.high}
+          </span>
+          <span class="right">${x.note}</span>
+        `;
+        logList.appendChild(div);
+      });
+    }
+
+    // Init
+    renderRulesTable();
+    seedMockLog();
+    loadHealthAndConfig();
+  </script>
+</body>
+</html>
+
