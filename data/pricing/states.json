@@ -1,14 +1,91 @@
 {
-  "US-TX": {
-    "laborIndex": 0.92
-  },
-  "US-FL": {
-    "laborIndex": 0.95
-  },
-  "US-CA": {
-    "laborIndex": 1.18
-  },
-  "US-NY": {
-    "laborIndex": 1.15
+  "anchorCity": "Nashville",
+  "states": {
+    "US-TN": {
+      "laborIndex": 0.90,
+      "metros": {
+        "Nashville": { "laborIndex": 1.00 }
+      }
+    },
+    "US-TX": {
+      "laborIndex": 0.92,
+      "metros": {
+        "Dallas-Fort Worth": { "laborIndex": 1.04 },
+        "Houston": { "laborIndex": 1.03 },
+        "San Antonio": { "laborIndex": 0.98 },
+        "Austin": { "laborIndex": 1.08 }
+      }
+    },
+    "US-FL": {
+      "laborIndex": 0.95,
+      "metros": {
+        "Miami-Fort Lauderdale": { "laborIndex": 1.10 },
+        "Orlando": { "laborIndex": 1.02 },
+        "Tampa Bay": { "laborIndex": 1.02 },
+        "Jacksonville": { "laborIndex": 0.98 }
+      }
+    },
+    "US-GA": {
+      "laborIndex": 0.90,
+      "metros": {
+        "Atlanta": { "laborIndex": 1.03 }
+      }
+    },
+    "US-AZ": {
+      "laborIndex": 0.94,
+      "metros": {
+        "Phoenix": { "laborIndex": 1.02 }
+      }
+    },
+    "US-NV": {
+      "laborIndex": 0.98,
+      "metros": {
+        "Las Vegas": { "laborIndex": 1.02 }
+      }
+    },
+    "US-CO": {
+      "laborIndex": 1.06,
+      "metros": {
+        "Denver": { "laborIndex": 1.06 }
+      }
+    },
+    "US-NC": {
+      "laborIndex": 0.92,
+      "metros": {
+        "Charlotte": { "laborIndex": 1.02 },
+        "Raleigh-Durham": { "laborIndex": 1.02 }
+      }
+    },
+    "US-CA": {
+      "laborIndex": 1.18,
+      "metros": {
+        "Los Angeles": { "laborIndex": 1.12 },
+        "San Diego": { "laborIndex": 1.10 }
+      }
+    },
+    "US-WA": {
+      "laborIndex": 1.08,
+      "metros": {
+        "Seattle": { "laborIndex": 1.10 }
+      }
+    },
+    "US-OR": {
+      "laborIndex": 1.02,
+      "metros": {
+        "Portland": { "laborIndex": 1.05 }
+      }
+    },
+    "US-PA": {
+      "laborIndex": 0.98,
+      "metros": {
+        "Philadelphia Metro": { "laborIndex": 1.02 }
+      }
+    },
+    "US-NY": {
+      "laborIndex": 1.15,
+      "metros": {
+        "New York City Metro": { "laborIndex": 1.15 }
+      }
+    }
   }
 }
