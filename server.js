@@ -38,6 +38,9 @@ const MAX_UPLOAD_MB = parseInt(process.env.MAX_UPLOAD_MB || "25", 10);
 const ALLOWED_MIME_PREFIX = (process.env.ALLOWED_MIME_PREFIX || "image/,video/").split(",");
 const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
 
+console.log("DEV_MODE raw:", process.env.DEV_MODE);
+console.log("DEV_MODE computed:", DEV_MODE);
+
 // ---- PATHS / DATA FILES ----
 const uploadsDir = path.join(__dirname, "uploads");
 const exportsDir = path.join(uploadsDir, "exports");
