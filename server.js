@@ -1,3 +1,5 @@
+// server.js
+
 import express from "express";
 import cors from "cors";
 import multer from "multer";
@@ -15,15 +17,18 @@ import YAML from "yamljs";
 
 dotenv.config();
 
-// ES module path setup
+// ---- ES MODULE PATH ----
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// ---- PRICING CONFIG (optional, if you're loading these here) ----
+// ---- PRICING CONFIG FILES ----
 const pricingDir = path.join(__dirname, "data", "pricing");
-// (only if states.json / trades.json exist)
-const statesConfig = JSON.parse(fs.readFileSync(path.join(pricingDir, "states.json"), "utf-8"));
-const tradesConfig = JSON.parse(fs.readFileSync(path.join(pricingDir, "trades.json"), "utf-8"));
+const statesConfig = JSON.parse(
+  fs.readFileSync(path.join(pricingDir, "states.json"), "utf-8")
+);
+const tradesConfig = JSON.parse(
+  fs.readFileSync(path.join(pricingDir, "trades.json"), "utf-8")
+);
 
 // ---- CORE ENV ----
 const PORT = process.env.PORT || 10000;
@@ -40,45 +45,18 @@ const dataDir = path.join(__dirname, "data");
 const jobsFile = path.join(dataDir, "jobs.json");
 const usersFile = path.join(dataDir, "users.json");
 
-// 🔴 THIS IS THE PART YOU’RE ASKING ABOUT 🔴
+// ---- ENSURE FOLDERS & JSON ----
 if (!fs.existsSync(uploadsDir)) fs.mkdirSync(uploadsDir, { recursive: true });
 if (!fs.existsSync(exportsDir)) fs.mkdirSync(exportsDir, { recursive: true });
 if (!fs.existsSync(dataDir)) fs.mkdirSync(dataDir, { recursive: true });
 
-if (!fs.existsSync(jobsFile)) {
-  fs.writeFileSync(jobsFile, "[]");
-}
-
-if (!fs.existsSync(usersFile)) {
-  fs.writeFileSync(usersFile, "{}");
-}
-// 🔴 END OF THAT PART 🔴
-
+if (!fs.existsSync(jobsFile)) fs.writeFileSync(jobsFile, "[]");
+if (!fs.existsSync(usersFile)) fs.writeFileSync(usersFile, "{}");
 
 console.log("[pricing] states.json loaded from:", path.join(pricingDir, "states.json"));
 console.log("[pricing] trades.json loaded from:", path.join(pricingDir, "trades.json"));
 
-
-// ---- CORE ENV ----
-const PORT = process.env.PORT || 10000;
-const DEV_MODE = (process.env.DEV_MODE || "false").toLowerCase() === "true";
-const FREE_PHOTO_LIMIT = parseInt(process.env.FREE_PHOTO_LIMIT || "2", 10);
-const MAX_UPLOAD_MB = parseInt(process.env.MAX_UPLOAD_MB || "25", 10);
-const ALLOWED_MIME_PREFIX = (process.env.ALLOWED_MIME_PREFIX || "image/,video/").split(",");
-const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
-
-// ---- PATHS / FILES ----
-const uploadsDir = path.join(__dirname, "uploads");
-const exportsDir = path.join(uploadsDir, "exports");
-const dataDir = path.join(__dirname, "data");
-const jobsFile = path.join(dataDir, "jobs.json");
-const usersFile = path.join(dataDir, "users.json");
-
-for (const p of [uploadsDir, exportsDir, dataDir]) {
-  if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
-}
-
-// ---- MULTER (UPLOADS) ----
+// ---- MULTER (UPLOAD HANDLER) ----
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, uploadsDir),
   filename: (req, file, cb) =>
