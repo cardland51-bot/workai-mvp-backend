@@ -13,8 +13,14 @@ import webpush from "web-push";
 import puppeteer from "puppeteer";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
+import fs from "fs";
+import path from "path";
+
 
 dotenv.config();
+const pricingDir = path.join(__dirname, "data", "pricing");
+const statesConfig = JSON.parse(fs.readFileSync(path.join(pricingDir, "states.json"), "utf-8"));
+const tradesConfig = JSON.parse(fs.readFileSync(path.join(pricingDir, "trades.json"), "utf-8"));
 const __filename = fileURLToPath(import.meta.url); const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 10000;
 const DEV_MODE = (process.env.DEV_MODE || "false").toLowerCase() === "true";
