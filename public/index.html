@@ -1,8 +1,11 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover"
+  />
   <title>WorkAI Deck</title>
   <style>
     :root {
@@ -10,326 +13,642 @@
       --bg-soft: #ffffff;
       --ink: #111827;
       --muted: #6b7280;
-      --accent: #c41e3a;
+      --accent: #c41e3a; /* Cardinal red */
       --accent-soft: rgba(196, 30, 58, 0.08);
-      --border: rgba(15, 23, 42, 0.08);
+      --border: rgba(15, 23, 42, 0.12);
       --radius-xl: 22px;
-      --radius-md: 12px;
-      --radius-sm: 6px;
       --shadow-soft: 0 14px 40px rgba(15, 23, 42, 0.12);
       --font: Inter, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-      --space-xs: 4px;
-      --space-sm: 8px;
-      --space-md: 16px;
-      --space-lg: 24px;
-      --space-xl: 48px;
-      --transition-fast: 0.2s ease-in-out;
-      --transition-medium: 0.35s ease-in-out;
-    }
-
-    body.night {
-      --bg: #020817;
-      --bg-soft: #111827;
-      --ink: #e5e7eb;
-      --muted: #9ca3af;
-      --accent: #f97316;
-      --accent-soft: rgba(249, 115, 22, 0.15);
-      --border: rgba(148, 163, 253, 0.22);
-      --shadow-soft: 0 20px 50px rgba(0, 0, 0, 0.6);
-    }
-
-    * {
-      box-sizing: border-box;
     }
 
     body {
       margin: 0;
-      font-family: var(--font);
+      padding: 0;
       background: var(--bg);
       color: var(--ink);
-      transition: background var(--transition-medium), color var(--transition-medium);
+      font-family: var(--font);
+    }
+
+    .shell {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 18px 14px 22px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
 
     header {
-      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .brand-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 10px;
     }
 
-    header h1 {
-      font-size: 1.25rem;
-      font-weight: 700;
+    .logo {
+      font-weight: 600;
+      font-size: 18px;
+      letter-spacing: 0.02em;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
 
-    .mode-toggle {
-      background: var(--accent-soft);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      color: var(--ink);
-      padding: 6px 10px;
-      cursor: pointer;
-      transition: background var(--transition-fast);
-    }
-
-    .mode-toggle:hover {
+    .logo-mark {
+      width: 14px;
+      height: 14px;
+      border-radius: 5px;
       background: var(--accent);
-      color: #fff;
+      box-shadow: 0 0 10px var(--accent-soft);
     }
 
-    main {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-xl);
-      padding: var(--space-lg);
-      max-width: 1280px;
-      margin: 0 auto;
-    }
-
-    .hero {
-      display: flex;
-      flex-direction: column;
-      gap: var(--space-md);
-    }
-
-    .headline {
-      font-size: 2rem;
-      font-weight: 700;
-    }
-
-    .subhead {
-      font-size: 1.1rem;
+    .hero-label {
+      font-size: 9px;
       color: var(--muted);
-      max-width: 600px;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .sub {
+      font-size: 13px;
+      color: var(--muted);
+      max-width: 520px;
     }
 
     .bullets {
-      color: var(--muted);
-      margin-top: var(--space-sm);
-    }
-
-    .upload-zone {
-      background: var(--bg-soft);
-      border: 2px dashed var(--border);
-      border-radius: var(--radius-xl);
-      padding: var(--space-xl);
-      text-align: center;
-      cursor: pointer;
-      transition: background var(--transition-fast), transform var(--transition-fast);
-    }
-
-    .upload-zone:hover {
-      background: var(--accent-soft);
-      transform: scale(1.02);
-    }
-
-    .lane-selector {
       display: flex;
-      justify-content: center;
-      gap: var(--space-sm);
-      margin-top: var(--space-md);
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 4px;
     }
 
-    .lane {
-      padding: 6px 14px;
-      border-radius: var(--radius-md);
+    .pill {
+      padding: 4px 9px;
+      border-radius: 999px;
       border: 1px solid var(--border);
-      background: var(--bg-soft);
-      color: var(--ink);
-      cursor: pointer;
-      transition: background var(--transition-fast);
+      font-size: 9px;
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    .lane.active,
-    .lane:hover {
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
       background: var(--accent);
-      color: #fff;
     }
 
-    .helper {
-      color: var(--muted);
-      font-size: 0.9rem;
-      margin-top: var(--space-sm);
+    .layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.8fr) minmax(260px, 1.2fr);
+      gap: 14px;
+      align-items: flex-start;
     }
 
-    .deck-preview {
-      overflow-x: auto;
-      display: flex;
-      gap: var(--space-md);
-      padding-bottom: var(--space-md);
+    @media (max-width: 900px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
     }
 
-    .deck-card {
+    .panel {
       background: var(--bg-soft);
-      border-radius: var(--radius-md);
-      box-shadow: var(--shadow-soft);
-      min-width: 240px;
-      padding: var(--space-md);
+      border-radius: var(--radius-xl);
       border: 1px solid var(--border);
-      transition: transform var(--transition-fast), opacity var(--transition-fast);
+      box-shadow: var(--shadow-soft);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
 
-    .deck-card img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: var(--radius-sm);
-    }
-
-    .lane-tag {
-      display: inline-block;
-      margin-top: var(--space-sm);
-      padding: 2px 10px;
-      border-radius: var(--radius-sm);
-      font-size: 0.75rem;
+    .panel-title {
+      font-size: 11px;
       font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .panel-sub {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    .lane-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .lane-pill {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      font-size: 10px;
+      color: var(--muted);
+      cursor: pointer;
+      background: transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.16s ease-out;
+    }
+
+    .lane-pill span.badge {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--border);
+    }
+
+    .lane-pill.active {
+      border-color: var(--accent);
       background: var(--accent-soft);
       color: var(--accent);
     }
 
-    .deck-card h3 {
-      margin: var(--space-sm) 0 0;
+    .lane-pill.active span.badge {
+      background: var(--accent);
     }
 
-    .deck-card p {
-      font-size: 0.9rem;
+    .dropzone {
+      margin-top: 8px;
+      padding: 14px 10px;
+      border-radius: 16px;
+      border: 1px dashed var(--border);
+      background: #fafafa;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      cursor: pointer;
+      transition: all 0.18s ease-out;
+    }
+
+    .drop-main {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .drop-title {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .drop-sub {
+      font-size: 10px;
       color: var(--muted);
     }
 
-    .timestamp {
-      font-size: 0.75rem;
+    .button-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: none;
+      background: var(--accent);
+      color: #ffffff;
+      font-size: 10px;
+      font-weight: 500;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .hint {
+      font-size: 9px;
       color: var(--muted);
     }
 
-    .how-it-works {
-      display: grid;
-      gap: var(--space-md);
+    .deck-wrap {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
     }
 
-    .how-it-works h2 {
-      font-size: 1.2rem;
+    .deck-label {
+      font-size: 10px;
+      font-weight: 500;
+      color: var(--ink);
+    }
+
+    .cards {
+      display: flex;
+      flex-direction: row;
+      gap: 10px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .cards::-webkit-scrollbar {
+      height: 4px;
+    }
+
+    .cards::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 253, 0.35);
+      border-radius: 999px;
+    }
+
+    .card {
+      min-width: 210px;
+      max-width: 230px;
+      border-radius: 18px;
+      border: 1px solid var(--border);
+      background: var(--bg-soft);
+      box-shadow: var(--shadow-soft);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 9px;
+    }
+
+    .card-label {
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+    }
+
+    .card-label strong {
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .card-img {
+      width: 100%;
+      height: 90px;
+      border-radius: 12px;
+      background-size: cover;
+      background-position: center;
+      background-color: #f3f4f6;
+      margin: 2px 0;
+    }
+
+    .card-range-label {
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .card-range {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .card-notes {
+      font-size: 9px;
+      color: var(--ink);
+    }
+
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 7px;
+      color: var(--muted);
+      gap: 4px;
+      margin-top: 2px;
+    }
+
+    .dot-green {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #16a34a;
+    }
+
+    .empty {
+      font-size: 9px;
+      color: var(--muted);
+      padding: 4px 2px 0;
+    }
+
+    /* Right side: how it works / trust */
+    .steps {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 9px;
+      color: var(--muted);
+    }
+
+    .steps strong {
+      color: var(--ink);
+      font-size: 10px;
     }
 
     .trust {
-      border-top: 1px solid var(--border);
-      padding-top: var(--space-md);
+      font-size: 9px;
       color: var(--muted);
-    }
-
-    footer {
       border-top: 1px solid var(--border);
-      padding: var(--space-md) var(--space-lg);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    @media (min-width: 768px) {
-      .hero {
-        flex-direction: row;
-        justify-content: space-between;
-        align-items: flex-start;
-      }
-
-      .upload-zone {
-        max-width: 400px;
-      }
+      padding-top: 6px;
+      margin-top: 2px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>WorkAI Deck</h1>
-    <button class="mode-toggle" id="modeToggle">🌗 Mode</button>
-  </header>
-
-  <main>
-    <section class="hero">
-      <div class="hero-text">
-        <div class="headline">Snap the job. Get a sane range.</div>
-        <div class="subhead">
-          Mowing, pressure washing, junk removal, handyman. One photo becomes a clean pricing card based on real field rules.
-        </div>
-        <ul class="bullets">
-          <li>No login. No spam.</li>
-          <li>Built by an operator, not a software tourist.</li>
-        </ul>
-      </div>
-
-      <div class="upload">
-        <label class="upload-zone">
-          📸 Drop a photo / Tap to upload
-          <input type="file" accept="image/*" hidden />
-        </label>
-        <div class="lane-selector">
-          <button class="lane active">Mow</button>
-          <button class="lane">Wash</button>
-          <button class="lane">Junk</button>
-          <button class="lane">Handyman</button>
-        </div>
-        <p class="helper">We’ll turn this into a private pricing card for you.</p>
-      </div>
-    </section>
-
-    <section class="deck">
-      <h2>Live Deck Preview</h2>
-      <div class="deck-preview">
-        <div class="deck-card">
-          <img src="https://picsum.photos/240/120?random=1" alt="job" />
-          <span class="lane-tag">Mow</span>
-          <h3>$45–$65</h3>
-          <p>Front + back yard, average lot.</p>
-          <div class="timestamp">Nov 9, 2025 — 10:32 AM</div>
-        </div>
-        <div class="deck-card">
-          <img src="https://picsum.photos/240/120?random=2" alt="job" />
-          <span class="lane-tag">Wash</span>
-          <h3>$120–$160</h3>
-          <p>Driveway, mid-size area.</p>
-          <div class="timestamp">Nov 9, 2025 — 09:50 AM</div>
-        </div>
-        <div class="deck-card">
-          <img src="https://picsum.photos/240/120?random=3" alt="job" />
-          <span class="lane-tag">Junk</span>
-          <h3>$80–$120</h3>
-          <p>Small pickup load, local dump.</p>
-          <div class="timestamp">Nov 8, 2025 — 04:12 PM</div>
+  <div class="shell">
+    <header>
+      <div class="brand-row">
+        <div class="logo">
+          <span class="logo-mark"></span>
+          WorkAI Deck
         </div>
       </div>
-    </section>
+      <div class="hero-label">PRICING COMPANION FOR REAL OPERATORS</div>
+      <h1>Snap the job. Get a sane range.</h1>
+      <div class="sub">
+        For mowing, pressure washing, junk removal, and handyman work. One photo becomes a clean pricing card you can stand behind.
+      </div>
+      <div class="bullets">
+        <div class="pill"><span class="pill-dot"></span>Built from real field work</div>
+        <div class="pill"><span class="pill-dot"></span>No login. No spam.</div>
+        <div class="pill"><span class="pill-dot"></span>Private to your device</div>
+      </div>
+    </header>
 
-    <section class="how-it-works">
-      <h2>How It Works</h2>
-      <p>1. Snap the job</p>
-      <p>2. We run it through rules — guardrails, not guesses</p>
-      <p>3. You get a clean band you can stand behind</p>
-    </section>
+    <div class="layout">
+      <!-- LEFT: Upload + Deck -->
+      <section class="panel">
+        <div class="panel-title">
+          <span>Create a pricing card</span>
+        </div>
+        <div class="panel-sub">
+          Pick the lane you’re quoting, add a photo, and we’ll return a band instead of a blind guess.
+        </div>
 
-    <section class="trust">
-      <p>Built out of real field experience. Trusted by 5★ local operators.</p>
-    </section>
-  </main>
+        <!-- Lane selection -->
+        <div class="lane-row" id="laneRow">
+          <button class="lane-pill active" data-lane="mowing">
+            <span class="badge"></span>Mowing
+          </button>
+          <button class="lane-pill" data-lane="pressure_washing">
+            <span class="badge"></span>Pressure Washing
+          </button>
+          <button class="lane-pill" data-lane="junk_removal">
+            <span class="badge"></span>Junk Removal
+          </button>
+          <button class="lane-pill" data-lane="handyman">
+            <span class="badge"></span>Handyman
+          </button>
+        </div>
 
-  <footer>
-    <span>Spanish support coming.</span>
-    <span>About • Safety • Contact</span>
-  </footer>
+        <!-- Upload -->
+        <div id="dropzone" class="dropzone">
+          <div class="drop-main">
+            <div class="drop-title">Drop a photo or tap to upload</div>
+            <div class="drop-sub">We’ll turn this into a private card for this device only.</div>
+          </div>
+          <button class="button-primary" type="button">
+            Use camera / upload
+          </button>
+        </div>
+        <input id="fileInput" type="file" accept="image/*,video/*" />
+
+        <div class="hint" id="uploadMsg"></div>
+
+        <!-- Deck -->
+        <div class="deck-wrap">
+          <div class="deck-label">Your deck</div>
+          <div id="cards" class="cards">
+            <!-- example card so it never feels empty -->
+            <article class="card">
+              <div class="card-label"><strong>Mowing card</strong> • sample</div>
+              <div class="card-img" style="background-image:linear-gradient(135deg,#e5e7eb,#9ca3af);"></div>
+              <div class="card-range-label">Suggested range</div>
+              <div class="card-range">$55 – $75</div>
+              <div class="card-notes">Standard weekly cut, front + back, easy access.</div>
+              <div class="card-meta">
+                <div><span class="dot-green"></span> Private to this device</div>
+                <div>Sample</div>
+              </div>
+            </article>
+          </div>
+          <div id="emptyState" class="empty">
+            Your first upload becomes Card #001. Use real jobs.
+          </div>
+        </div>
+      </section>
+
+      <!-- RIGHT: How it works / trust -->
+      <aside class="panel">
+        <div class="panel-title">
+          <span>How it works</span>
+        </div>
+        <div class="steps">
+          <div><strong>1. Snap the job.</strong> Use a clear photo of the actual work.</div>
+          <div><strong>2. We apply guardrails.</strong> Each lane uses its own ranges and rules to keep numbers sane.</div>
+          <div><strong>3. You quote with confidence.</strong> Use the band as your fast check, not a script.</div>
+        </div>
+        <div class="trust">
+          Built from real service work, not theory. Designed for operators who care about showing up right, charging fair, and staying consistent.
+        </div>
+      </aside>
+    </div>
+  </div>
 
   <script>
-    // Mode toggle
-    document.querySelector('#modeToggle').addEventListener('click', () => {
-      document.body.classList.toggle('night');
+    const API_BASE = window.location.origin;
+
+    const laneRow = document.getElementById("laneRow");
+    const dropzone = document.getElementById("dropzone");
+    const fileInput = document.getElementById("fileInput");
+    const cardsEl = document.getElementById("cards");
+    const emptyEl = document.getElementById("emptyState");
+    const uploadMsg = document.getElementById("uploadMsg");
+
+    let selectedLane = "mowing";
+
+    laneRow.addEventListener("click", (e) => {
+      const btn = e.target.closest(".lane-pill");
+      if (!btn) return;
+      document
+        .querySelectorAll(".lane-pill")
+        .forEach((b) => b.classList.remove("active"));
+      btn.classList.add("active");
+      selectedLane = btn.getAttribute("data-lane");
     });
 
-    // Lane selector
-    document.querySelectorAll('.lane').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.lane').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      });
+    dropzone.addEventListener("click", () => fileInput.click());
+
+    dropzone.addEventListener("dragover", (e) => {
+      e.preventDefault();
+      dropzone.style.borderColor = "var(--accent)";
+      dropzone.style.background = "#fef2f2";
     });
+
+    dropzone.addEventListener("dragleave", (e) => {
+      e.preventDefault();
+      resetDropzoneStyle();
+    });
+
+    dropzone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      resetDropzoneStyle();
+      const files = Array.from(e.dataTransfer.files || []);
+      if (files.length) handleFiles(files);
+    });
+
+    function resetDropzoneStyle() {
+      dropzone.style.borderColor = "var(--border)";
+      dropzone.style.background = "#fafafa";
+    }
+
+    fileInput.addEventListener("change", (e) => {
+      const files = Array.from(e.target.files || []);
+      if (files.length) handleFiles(files);
+      fileInput.value = "";
+    });
+
+    async function handleFiles(files) {
+      uploadMsg.textContent = "";
+      for (const file of files) {
+        try {
+          const job = await uploadJob(file);
+          prependCard(job, true);
+        } catch (err) {
+          console.error(err);
+          uploadMsg.textContent = err.message || "Upload failed.";
+        }
+      }
+      refreshEmptyState();
+    }
+
+    async function uploadJob(file) {
+      const form = new FormData();
+      form.append("media", file);
+      form.append("scopeType", selectedLane);
+      form.append("description", "");
+      form.append("price", "");
+
+      const res = await fetch(`${API_BASE}/api/jobs/upload`, {
+        method: "POST",
+        body: form
+      });
+
+      if (!res.ok) {
+        let errText = "Upload failed.";
+        try {
+          const err = await res.json();
+          if (err && err.error) errText = err.error;
+        } catch {}
+        throw new Error(errText);
+      }
+
+      const data = await res.json();
+      if (!data.ok || !data.job) {
+        throw new Error("Unexpected response.");
+      }
+      uploadMsg.textContent = "Card created.";
+      return data.job;
+    }
+
+    async function loadJobs() {
+      try {
+        const res = await fetch(`${API_BASE}/api/jobs/list`);
+        if (!res.ok) return;
+        const jobs = await res.json();
+        // clear everything except the sample card
+        cardsEl.innerHTML = "";
+        (jobs || []).forEach((j) => prependCard(j, false));
+        refreshEmptyState();
+      } catch (e) {
+        console.warn("Could not load jobs", e);
+      }
+    }
+
+    function prependCard(job, isNew) {
+      if (!job) return;
+      emptyEl.style.display = "none";
+
+      const lane = (job.scopeType || "mowing")
+        .replace("_", " ")
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+
+      const created = job.createdAt ? new Date(job.createdAt) : new Date();
+      const when = created.toLocaleString([], {
+        month: "short",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit"
+      });
+
+      const mediaUrl =
+        (job.media && job.media.url) ||
+        (job.media && job.media.startsWith("http")
+          ? job.media
+          : job.media
+          ? `${API_BASE}${job.media}`
+          : "");
+
+      const low = job.aiLow || job.price || "?";
+      const high = job.aiHigh || job.price || "?";
+      const notes =
+        job.description && job.description.trim().length
+          ? job.description.trim()
+          : "Notes from this photo.";
+
+      const card = document.createElement("article");
+      card.className = "card";
+
+      card.innerHTML = `
+        <div class="card-label"><strong>${lane} card</strong>${isNew ? " • new" : ""}</div>
+        <div class="card-img" style="${
+          mediaUrl
+            ? `background-image:url('${mediaUrl.replace(/'/g, "\\'")}');`
+            : "background-image:linear-gradient(135deg,#e5e7eb,#9ca3af);"
+        }"></div>
+        <div class="card-range-label">Suggested range</div>
+        <div class="card-range">$${low} – $${high}</div>
+        <div class="card-notes">${escapeHtml(notes)}</div>
+        <div class="card-meta">
+          <div><span class="dot-green"></span> Private to this device</div>
+          <div>${when}</div>
+        </div>
+      `;
+
+      cardsEl.prepend(card);
+    }
+
+    function refreshEmptyState() {
+      const count = cardsEl.children.length;
+      emptyEl.style.display = count === 0 ? "block" : "none";
+    }
+
+    function escapeHtml(str) {
+      return (str || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    // init: load existing cards from backend
+    loadJobs();
   </script>
 </body>
 </html>
