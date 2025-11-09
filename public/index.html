@@ -1,0 +1,25 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>WorkAI</title>
+<style>body{font-family:system-ui;margin:0;background:#0b0f14;color:#e6edf3}header{padding:12px;border-bottom:1px solid #1f2630;display:flex;justify-content:space-between}main{padding:12px}input,textarea,select,button{background:#0b0f14;color:#e6edf3;border:1px solid #2a3240;border-radius:10px;padding:10px;font-size:16px}button{min-height:44px}img{max-width:100%;border-radius:8px;border:1px solid #1f2630}</style>
+</head><body>
+<header><strong>WorkAI</strong><div><button id="fsBtn">Fullscreen</button> <button id="notifBtn">Enable notifications</button></div></header>
+<main>
+<section><h3>Upload</h3><form id="uploadForm"><div><input name="price" type="number" placeholder="Price" required> <select name="scopeType"><option>snapshot</option><option>detailed</option></select></div>
+<div><textarea name="description" rows="3" placeholder="Short description"></textarea></div>
+<div><input type="file" name="media" accept="image/*,video/*"> <button type="submit">Create</button></div>
+<div id="uploadMsg"></div></form></section>
+<section><h3>Your Jobs</h3><div id="jobs"></div></section>
+<section id="paywall"><h3>Pro – $<span id="priceLabel"></span>/mo</h3><div id="paypal-container"></div><div id="paywallMsg"></div></section>
+</main>
+<script>
+const $=s=>document.querySelector(s);
+$('#fsBtn').onclick=()=>{const el=document.documentElement; if(!document.fullscreenElement) el.requestFullscreen?.(); else document.exitFullscreen?.();};
+let CFG=null;
+async function loadConfig(){ const r=await fetch('/api/config'); CFG=await r.json(); document.getElementById('priceLabel').textContent=CFG.paywallPrice;
+ if(CFG.paypalClientId&&CFG.paypalPlanId){const s=document.createElement('script'); s.src=`https://www.${CFG.paypalEnv==='live'?'':'sandbox.'}paypal.com/sdk/js?client-id=${encodeURIComponent(CFG.paypalClientId)}&vault=true&intent=subscription`; s.onload=renderPP; document.body.appendChild(s);}}
+async function renderPP(){ if(!window.paypal) return; paypal.Buttons({createSubscription:(d,a)=>a.subscription.create({plan_id:CFG.paypalPlanId}), onApprove: async (d)=>{ const r=await fetch('/api/paypal/verify-subscription',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({subscriptionId:d.subscriptionID})}); const j=await r.json(); document.getElementById('paywallMsg').textContent=j.ok?'Pro activated':'Verify failed';}}).render('#paypal-container');}
+async function listJobs(){ const r=await fetch('/api/jobs/list'); const jobs=await r.json(); const el=$('#jobs'); el.innerHTML=''; jobs.forEach(j=>{ const d=document.createElement('div'); d.innerHTML=`<div><b>$${j.price}</b> ${j.scopeType}</div><div>${new Date(j.createdAt).toLocaleString()}</div>${j.media?`<img src="${j.media.url}">`:''}<div>Band: $${j.aiLow}–$${j.aiHigh}</div><button onclick="exportJob('${j.id}')">Export</button>`; el.prepend(d); }); }
+async function exportJob(id){ const r=await fetch('/api/exports',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({jobId:id})}); const j=await r.json(); if(j.ok&&j.url) window.open(j.url,'_blank'); }
+document.getElementById('uploadForm').addEventListener('submit', async (e)=>{ e.preventDefault(); const fd=new FormData(e.currentTarget); const r=await fetch('/api/jobs/upload',{method:'POST',body:fd}); const j=await r.json(); document.getElementById('uploadMsg').textContent=j.error||'Created'; await listJobs(); e.currentTarget.reset();});
+(async function(){ await loadConfig(); await listJobs(); if('serviceWorker' in navigator){ try{ await navigator.serviceWorker.register('/sw.js'); }catch(e){} }})();
+</script>
+</body></html>

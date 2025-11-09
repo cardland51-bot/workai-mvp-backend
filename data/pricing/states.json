@@ -1,0 +1,14 @@
+{
+  "US-TX": {
+    "laborIndex": 0.92
+  },
+  "US-FL": {
+    "laborIndex": 0.95
+  },
+  "US-CA": {
+    "laborIndex": 1.18
+  },
+  "US-NY": {
+    "laborIndex": 1.15
+  }
+}

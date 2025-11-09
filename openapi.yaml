@@ -1,0 +1,9 @@
+openapi: 3.0.3
+info:
+  title: WorkAI MVP API
+  version: 1.2.1
+paths:
+  /api/health:
+    get:
+      responses:
+        '200': { description: OK }
